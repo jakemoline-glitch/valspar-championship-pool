@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Valspar Championship 2026 Pool</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #8B0000, #DC143C, #FF6347);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+
+        .header .info {
+            font-size: 0.9em;
+            opacity: 0.8;
+            margin-top: 10px;
+        }
+
+        .tabs {
+            display: flex;
+            background: #f5f5f5;
+            border-bottom: 2px solid #ddd;
+            overflow-x: auto;
+        }
+
+        .tab-button {
+            flex: 1;
+            min-width: 120px;
+            padding: 15px 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            color: #666;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab-button:hover {
+            background: #e8e8e8;
+            color: #333;
+        }
+
+        .tab-button.active {
+            color: #DC143C;
+            border-bottom: 3px solid #DC143C;
+            background: white;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 30px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .entry-form {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #DC143C;
+        }
+
+        .group-info {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        button {
+            background: linear-gradient(135deg, #DC143C, #8B0000);
+            color: white;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            width: 100%;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(220,20,60,0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .participant-card {
+            background: #f9f9f9;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .participant-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+        }
+
+        .participant-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .participant-name {
+            font-size: 1.4em;
+            font-weight: 700;
+            color: #DC143C;
+        }
+
+        .participant-score {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #1a73e8;
+        }
+
+        .participant-picks {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .pick-item {
+            background: white;
+            padding: 10px;
+            border-radius: 6px;
+            border-left: 4px solid #DC143C;
+        }
+
+        .pick-label {
+            font-size: 0.85em;
+            color: #666;
+            font-weight: 600;
+        }
+
+        .pick-value {
+            font-size: 1em;
+            color: #333;
+            margin-top: 2px;
+        }
+
+        .golfer-score {
+            display: inline-block;
+            margin-left: 8px;
+            padding: 2px 8px;
+            background: #e8f5e9;
+            color: #2e7d32;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+
+        .golfer-score.missed-cut {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .predicted-score {
+            margin-top: 10px;
+            padding: 10px;
+            background: #fff3e0;
+            border-radius: 6px;
+            border-left: 4px solid #ff9800;
+        }
+
+        .leaderboard {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        th {
+            background: #f5f5f5;
+            font-weight: 600;
+            color: #333;
+            position: sticky;
+            top: 0;
+        }
+
+        tr:hover {
+            background: #f9f9f9;
+        }
+
+        .admin-section {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .admin-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .score-entry {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .alert-info {
+            background: #e3f2fd;
+            color: #1565c0;
+            border-left: 4px solid #1565c0;
+        }
+
+        .alert-warning {
+            background: #fff3e0;
+            color: #e65100;
+            border-left: 4px solid #e65100;
+        }
+
+        .alert-success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #2e7d32;
+        }
+
+        .countdown {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #d32f2f;
+            margin: 10px 0;
+        }
+
+        .locked-message {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .locked-message h2 {
+            color: #d32f2f;
+            margin-bottom: 10px;
+        }
+
+        .chart-container {
+            margin: 20px 0;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 8px;
+        }
+
+        .chart-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #DC143C;
+        }
+
+        .bar-chart {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .bar-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .bar-label {
+            min-width: 150px;
+            font-weight: 500;
+            font-size: 0.9em;
+        }
+
+        .bar-visual {
+            flex: 1;
+            height: 30px;
+            background: linear-gradient(90deg, #DC143C, #FF6347);
+            border-radius: 4px;
+            position: relative;
+            min-width: 20px;
+        }
+
+        .bar-count {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+
+        .auto-refresh-status {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(220, 20, 60, 0.9);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            z-index: 1000;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .tab-button {
+                padding: 12px 10px;
+                font-size: 14px;
+                min-width: 80px;
+            }
+
+            .tab-content {
+                padding: 20px;
+            }
+
+            .participant-picks {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⛳ The Valspar Championship 2026</h1>
+            <div class="subtitle">March 19-22 · Copperhead Course, Innisbrook Resort</div>
+            <div class="info">$50 Entry · Best 6 of 9 Scoring · Venmo @Jake-Moline-1</div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-button active" onclick="switchTab('enter-picks')">📝 Enter Picks</button>
+            <button class="tab-button" onclick="switchTab('all-picks')">👥 All Picks</button>
+            <button class="tab-button" onclick="switchTab('leaderboard')">🏅 Leaderboard</button>
+            <button class="tab-button" onclick="switchTab('scores')">⛳ Golfer Scores</button>
+            <button class="tab-button" onclick="switchTab('popularity')">📊 Pick Popularity</button>
+        </div>
+
+        <div id="enter-picks-panel" class="tab-content active">
+            <div id="countdown-display"></div>
+            <div id="entry-form-container"></div>
+        </div>
+
+        <div id="all-picks-panel" class="tab-content">
+            <div id="all-picks-display"></div>
+        </div>
+
+        <div id="leaderboard-panel" class="tab-content">
+            <div id="leaderboard-display"></div>
+        </div>
+
+        <div id="scores-panel" class="tab-content">
+            <div id="scores-display"></div>
+        </div>
+
+        <div id="popularity-panel" class="tab-content">
+            <div id="popularity-display"></div>
+        </div>
+    </div>
+
+    <div id="auto-refresh-status" class="auto-refresh-status" style="display: none;">
+        Auto-refresh active
+    </div>
+
+    <script>
+        // Configuration
+        const SUPABASE_URL = 'https://dhcuseybeoybnagiezbc.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRoY3VzZXliZW95Ym5hZ2llemJjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4NDUyMTIsImV4cCI6MjA4NzQyMTIxMn0.0SPoLKflZjpgXDASm7dlZuo7IY4YoRO0gmazJJOeAUA';
+        const DATABASE_KEY = 'valsparPool2026';
+        const ADMIN_PASSWORD = 'VGl0bGVpc3Rnb2xmODgh'; // Base64: Titleistgolf88!!
+        const TSTART = new Date('2026-03-19T08:00:00-04:00'); // 8 AM ET Thursday
+        const TEND = new Date('2026-03-22T20:00:00-04:00'); // 8 PM EDT Sunday
+
+        // Golfer groups
+        const golferGroups = {
+            group1: ['Xander Schauffele', 'Robert MacIntyre', 'Viktor Hovland', 'Matt Fitzpatrick'],
+            group2: ['Akshay Bhatia', 'Jordan Spieth', 'Patrick Cantlay', 'Jacob Bridgeman', 'Ben Griffin'],
+            group3: ['Justin Thomas', 'Brooks Koepka', 'J.J. Spaun', 'Corey Conners', 'Nicolai Hojgaard', 'Keegan Bradley'],
+            group4: ['Sahith Theegala', 'Nick Taylor', 'Taylor Pendrith', 'Rasmus Hojgaard', 'Wyndham Clark', 'Davis Thompson', 'Alex Smalley'],
+            group5: ['Aaron Rai', 'Ricky Castillo', 'Pierceson Coody', 'Matt McCarty', 'Thorbjorn Olesen', 'Max Homa', 'Ryo Hisatsune', 'Max Greyserman'],
+            group6: ['Taylor Moore', 'Patrick Rodgers', 'Kristoffer Reitan', 'Christiaan Bezuidenhout', 'Max McGreevy', 'Mac Meissner', 'Austin Smotherman', 'Stephan Jaeger', 'Bud Cauley', 'Rasmus Neergaard-Petersen'],
+            wildcard: ['Marco Penge', 'Jordan Smith', 'Tony Finau', 'Sungjae Im', 'John Parry', 'Sudarshan Yellamaraju', 'Rico Hoey', 'Matthias Schmid', 'Mackenzie Hughes', 'Denny McCarthy', 'Matt Wallace', 'William Mouw', 'Kevin Roy', 'Johnny Keefer', 'Tom Kim', 'Lucas Glover', 'Lee Hodges', 'Jesper Svensson', 'Daniel Brown', 'Billy Horschel', 'Michael Kim', 'Michael Brennan', 'Eric Cole', 'Andrew Novak', 'Matt Kuchar', 'Beau Hossler', 'Adrien Dumont De Chassart', 'Garrick Higgo', 'Vince Whaley', 'Luke Clanton', 'Austin Eckroat', 'Chad Ramey', 'David Ford', 'Steven Fisk', 'Gary Woodland', 'Adam Hadwin', 'Kevin Yu', 'Chandler Blanchet', 'Blades Brown', 'Zecheng Dou', 'S.H. Kim', 'Webb Simpson', 'Adrien Saddier', 'Mark Hubbard', 'Zac Blair', 'Zach Bauchou', 'Emiliano Grillo', 'David Lipsky', 'Matthieu Pavon', 'Dylan Wu', 'Neal Shipley', 'Adam Svensson', 'Karl Vilips', 'Isaiah Salinda', 'John Vanderlaan', 'Patrick Fishburn', 'Takumi Kanaya', 'Chandler Phillips', 'A.J. Ewart', 'Jackson Suber', 'Davis Riley', 'Jeremy Paul', 'Jimmy Stanger', 'Hank Lebioda', 'David Skinns', 'Brandt Snedeker', 'Joe Highsmith', 'Patton Kizzire', 'Pontus Nyholm', 'Erik van Rooyen', 'Kevin Streelman', 'Brice Garnett', 'Adam Schenk', 'Peter Malnati', 'Nick Dunlap', 'Gordon Sargent', 'Davis Chatfield', 'Paul Peterson', 'Brian Campbell', 'Cameron Davis', 'Danny Walker', 'Kensei Hirata', 'Charley Hoffman', 'Jeffrey Kang', 'Paul Waring', 'Alejandro Tosti', 'Rafael Campos', 'Danny Willett', 'Marcelo Rozo', 'Greg Koch']
+        };
+
+        // State
+        let participants = [];
+        let golferScores = {};
+        let missedCuts = [];
+        let isAdmin = sessionStorage.getItem('apiAdmin') === 'true';
+        let autoRefreshInterval = null;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadData();
+            renderCountdown();
+            renderEntryForm();
+            setInterval(renderCountdown, 1000);
+            initializeAutoRefresh();
+        });
+
+        // Auto-refresh functionality
+        function initializeAutoRefresh() {
+            const now = new Date();
+            const dayOfWeek = now.getDay(); // 0=Sunday, 4=Thursday
+            const hour = now.getHours();
+
+            // Only run during tournament (Thu-Sun, 8 AM - 8 PM ET)
+            const isTournamentDay = dayOfWeek >= 4 || dayOfWeek === 0;
+            const isDuringHours = hour >= 8 && hour < 20;
+            const isTournamentActive = now >= TSTART && now <= TEND;
+
+            if (isTournamentActive && isTournamentDay && isDuringHours) {
+                console.log('Auto-refresh initialized');
+                document.getElementById('auto-refresh-status').style.display = 'block';
+                
+                // Fetch immediately
+                if (isAdmin) {
+                    fetchLiveScores();
+                }
+                
+                // Then every 5 minutes
+                autoRefreshInterval = setInterval(() => {
+                    if (isAdmin) {
+                        fetchLiveScores();
+                    }
+                }, 5 * 60 * 1000);
+            }
+        }
+
+        // Supabase functions
+        async function loadData() {
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/pool_data?key=eq.${DATABASE_KEY}`, {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data && data.length > 0) {
+                        const poolData = data[0].value;
+                        participants = poolData.participants || [];
+                        golferScores = poolData.golferScores || {};
+                        missedCuts = poolData.missedCuts || [];
+                        console.log('Data loaded:', participants.length, 'participants');
+                    }
+                } else {
+                    console.error('Failed to load data');
+                }
+            } catch (error) {
+                console.error('Error loading data:', error);
+            }
+
+            renderAllPicks();
+            renderLeaderboard();
+            renderScores();
+            renderPopularity();
+        }
+
+        async function saveData() {
+            try {
+                // CRITICAL SAFEGUARD: Fetch current data before saving
+                const checkResponse = await fetch(`${SUPABASE_URL}/rest/v1/pool_data?key=eq.${DATABASE_KEY}`, {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                    }
+                });
+
+                if (checkResponse.ok) {
+                    const currentData = await checkResponse.json();
+                    if (currentData && currentData.length > 0) {
+                        const currentParticipants = currentData[0].value.participants || [];
+                        const currentCount = currentParticipants.length;
+                        const newCount = participants.length;
+
+                        // Block ANY decrease in participant count
+                        if (newCount < currentCount) {
+                            alert(`🚨 DATA SAFEGUARD TRIGGERED!\n\nCannot save: This would reduce participants from ${currentCount} to ${newCount}.\n\nReloading correct data from database...`);
+                            console.error('Save blocked: participant count decrease detected');
+                            
+                            // Reload correct data
+                            participants = currentParticipants;
+                            golferScores = currentData[0].value.golferScores || {};
+                            missedCuts = currentData[0].value.missedCuts || [];
+                            
+                            renderAllPicks();
+                            renderLeaderboard();
+                            return;
+                        }
+                    }
+                }
+
+                // Safe to proceed with save
+                const poolData = {
+                    participants,
+                    golferScores,
+                    missedCuts
+                };
+
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/pool_data?key=eq.${DATABASE_KEY}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                        'Content-Type': 'application/json',
+                        'Prefer': 'return=minimal'
+                    },
+                    body: JSON.stringify({ value: poolData })
+                });
+
+                if (response.ok) {
+                    console.log('✅ Data saved successfully');
+                } else {
+                    console.error('Failed to save data');
+                }
+            } catch (error) {
+                console.error('Error saving data:', error);
+            }
+        }
+
+        // Countdown timer
+        function renderCountdown() {
+            const now = new Date();
+            const diff = TSTART - now;
+
+            const countdownEl = document.getElementById('countdown-display');
+            
+            if (diff > 0) {
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+                countdownEl.innerHTML = `
+                    <div class="alert alert-warning">
+                        <strong>⏰ Picks lock in:</strong>
+                        <div class="countdown">${days}d ${hours}h ${minutes}m ${seconds}s</div>
+                    </div>
+                `;
+            } else {
+                countdownEl.innerHTML = `
+                    <div class="alert alert-info">
+                        <strong>🔒 Picks are locked.</strong> Tournament in progress!
+                    </div>
+                `;
+            }
+        }
+
+        // Entry form
+        function renderEntryForm() {
+            const now = new Date();
+            const locked = now >= TSTART;
+            const container = document.getElementById('entry-form-container');
+
+            if (locked && !isAdmin) {
+                container.innerHTML = `
+                    <div class="locked-message">
+                        <h2>🔒 Picks Are Locked</h2>
+                        <p>The tournament has started. Check the leaderboard to see standings!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="entry-form">
+                    <div class="form-group">
+                        <label for="name">Your Name</label>
+                        <input type="text" id="name" placeholder="Enter your name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="group1">Group 1 - Pick 1</label>
+                        <select id="group1" required>
+                            <option value="">Select golfer...</option>
+                            ${golferGroups.group1.map(g => `<option value="${g}">${g}</option>`).join('')}
+                        </select>
+                        <div class="group-info">Choose 1 from ${golferGroups.group1.length} golfers</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="group2">Group 2 - Pick 1</label>
+                        <select id="group2" required>
+                            <option value="">Select golfer...</option>
+                            ${golferGroups.group2.map(g => `<option value="${g}">${g}</option>`).join('')}
+                        </select>
+                        <div class="group-info">Choose 1 from ${golferGroups.group2.length} golfers</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="group3">Group 3 - Pick 1</label>
+                        <select id="group3" required>
+                            <option value="">Select golfer...</option>
+                            ${golferGroups.group3.map(g => `<option value="${g}">${g}</option>`).join('')}
+                        </select>
+                        <div class="group-info">Choose 1 from ${golferGroups.group3.length} golfers</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="group4">Group 4 - Pick 1</label>
+                        <select id="group4" required>
+                            <option value="">Select golfer...</option>
+                            ${golferGroups.group4.map(g => `<option value="${g}">${g}</option>`).join('')}
+                        </select>
+                        <div class="group-info">Choose 1 from ${golferGroups.group4.length} golfers</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="group5">Group 5 - Pick 1</label>
+                        <select id="group5" required>
+                            <option value="">Select golfer...</option>
+                            ${golferGroups.group5.map(g => `<option value="${g}">${g}</option>`).join('')}
+                        </select>
+                        <div class="group-info">Choose 1 from ${golferGroups.group5.length} golfers</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="group6">Group 6 - Pick 1</label>
+                        <select id="group6" required>
+                            <option value="">Select golfer...</option>
+                            ${golferGroups.group6.map(g => `<option value="${g}">${g}</option>`).join('')}
+                        </select>
+                        <div class="group-info">Choose 1 from ${golferGroups.group6.length} golfers</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="wildcard1">Wild Card 1</label>
+                        <select id="wildcard1" required>
+                            <option value="">Select golfer...</option>
+                            ${golferGroups.wildcard.map(g => `<option value="${g}">${g}</option>`).join('')}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="wildcard2">Wild Card 2</label>
+                        <select id="wildcard2" required>
+                            <option value="">Select golfer...</option>
+                            ${golferGroups.wildcard.map(g => `<option value="${g}">${g}</option>`).join('')}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="wildcard3">Wild Card 3</label>
+                        <select id="wildcard3" required>
+                            <option value="">Select golfer...</option>
+                            ${golferGroups.wildcard.map(g => `<option value="${g}">${g}</option>`).join('')}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="predicted-score">Predicted Winning Score (e.g., -12)</label>
+                        <input type="number" id="predicted-score" placeholder="-12" required>
+                        <div class="group-info">Tiebreaker: Closest to actual winning score</div>
+                    </div>
+
+                    <button onclick="submitPicks()">Submit Picks</button>
+                </div>
+            `;
+        }
+
+        function submitPicks() {
+            const name = document.getElementById('name').value.trim();
+            const picks = {
+                group1: document.getElementById('group1').value,
+                group2: document.getElementById('group2').value,
+                group3: document.getElementById('group3').value,
+                group4: document.getElementById('group4').value,
+                group5: document.getElementById('group5').value,
+                group6: document.getElementById('group6').value,
+                wildcard1: document.getElementById('wildcard1').value,
+                wildcard2: document.getElementById('wildcard2').value,
+                wildcard3: document.getElementById('wildcard3').value
+            };
+            const predictedScore = parseInt(document.getElementById('predicted-score').value);
+
+            // Validation
+            if (!name) {
+                alert('Please enter your name');
+                return;
+            }
+
+            for (let key in picks) {
+                if (!picks[key]) {
+                    alert(`Please select a golfer for ${key.replace(/(\d)/, ' $1')}`);
+                    return;
+                }
+            }
+
+            // Check for duplicate golfers across wild cards
+            const allPicks = Object.values(picks);
+            const uniquePicks = new Set(allPicks);
+            if (uniquePicks.size !== allPicks.length) {
+                alert('You cannot select the same golfer multiple times!');
+                return;
+            }
+
+            if (isNaN(predictedScore)) {
+                alert('Please enter a valid predicted score');
+                return;
+            }
+
+            // Check if name already exists
+            const existingIndex = participants.findIndex(p => p.name.toLowerCase() === name.toLowerCase());
+            
+            if (existingIndex >= 0) {
+                if (!confirm(`Update picks for ${name}?`)) {
+                    return;
+                }
+                participants[existingIndex] = { name, picks, predictedScore };
+            } else {
+                participants.push({ name, picks, predictedScore });
+            }
+
+            saveData();
+            alert('Picks submitted successfully!');
+            
+            // Clear form
+            document.getElementById('name').value = '';
+            Object.keys(picks).forEach(key => {
+                document.getElementById(key).value = '';
+            });
+            document.getElementById('predicted-score').value = '';
+
+            renderAllPicks();
+            renderLeaderboard();
+        }
+
+        // All picks display
+        function renderAllPicks() {
+            const container = document.getElementById('all-picks-display');
+            const now = new Date();
+            const visible = now >= TSTART || isAdmin;
+
+            if (!visible) {
+                container.innerHTML = `
+                    <div class="locked-message">
+                        <h2>🔒 Picks Hidden</h2>
+                        <p>All picks will be visible when the tournament starts.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            if (participants.length === 0) {
+                container.innerHTML = '<div class="alert alert-info">No picks submitted yet.</div>';
+                return;
+            }
+
+            const sorted = [...participants].sort((a, b) => a.name.localeCompare(b.name));
+
+            container.innerHTML = sorted.map(p => {
+                const scores = Object.keys(p.picks).map(key => {
+                    const golfer = p.picks[key];
+                    const score = golferScores[golfer];
+                    const isMC = missedCuts.includes(golfer);
+                    return { golfer, score, isMC, group: key };
+                });
+
+                return `
+                    <div class="participant-card">
+                        <div class="participant-header">
+                            <div class="participant-name">${p.name}</div>
+                            <div class="participant-score">${calculateScore(p)}</div>
+                        </div>
+                        <div class="participant-picks">
+                            ${scores.map(s => `
+                                <div class="pick-item">
+                                    <div class="pick-label">${s.group.replace(/(\d)/, ' $1').toUpperCase()}</div>
+                                    <div class="pick-value">
+                                        ${s.golfer}
+                                        ${s.score !== undefined ? `<span class="golfer-score ${s.isMC ? 'missed-cut' : ''}">${s.isMC ? 'MC' : (s.score > 0 ? '+' : '') + s.score}</span>` : ''}
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="predicted-score">
+                            <strong>Predicted Winner:</strong> ${p.predictedScore > 0 ? '+' : ''}${p.predictedScore}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Leaderboard
+        function renderLeaderboard() {
+            const container = document.getElementById('leaderboard-display');
+
+            if (participants.length === 0) {
+                container.innerHTML = '<div class="alert alert-info">No participants yet.</div>';
+                return;
+            }
+
+            const sorted = [...participants]
+                .map(p => ({ ...p, score: calculateScore(p) }))
+                .sort((a, b) => a.score - b.score);
+
+            container.innerHTML = `
+                <div class="leaderboard">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Name</th>
+                                <th>Score</th>
+                                <th>Best 6</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${sorted.map((p, i) => {
+                                const best6 = getBest6Golfers(p);
+                                return `
+                                    <tr>
+                                        <td><strong>${i + 1}</strong></td>
+                                        <td>${p.name}</td>
+                                        <td><strong>${p.score}</strong></td>
+                                        <td>${best6.map(g => g.golfer).join(', ')}</td>
+                                    </tr>
+                                `;
+                            }).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        // Calculate score
+        function calculateScore(participant) {
+            const scores = Object.values(participant.picks).map(golfer => {
+                if (missedCuts.includes(golfer)) {
+                    return 60; // MC = +30 for rounds 3 & 4
+                }
+                return golferScores[golfer] !== undefined ? golferScores[golfer] : 999;
+            });
+
+            // Best 6 of 9
+            scores.sort((a, b) => a - b);
+            const best6 = scores.slice(0, 6);
+            return best6.reduce((sum, s) => sum + s, 0);
+        }
+
+        function getBest6Golfers(participant) {
+            const scores = Object.keys(participant.picks).map(key => {
+                const golfer = participant.picks[key];
+                const score = missedCuts.includes(golfer) ? 60 : (golferScores[golfer] !== undefined ? golferScores[golfer] : 999);
+                return { golfer, score };
+            });
+
+            scores.sort((a, b) => a.score - b.score);
+            return scores.slice(0, 6);
+        }
+
+        // Scores display
+        function renderScores() {
+            const container = document.getElementById('scores-display');
+
+            const allGolfers = new Set();
+            Object.values(golferGroups).flat().forEach(g => allGolfers.add(g));
+
+            const golferList = Array.from(allGolfers).sort();
+
+            container.innerHTML = `
+                ${isAdmin ? `
+                    <div class="admin-section">
+                        <h3>🔐 Admin Controls</h3>
+                        <button onclick="adminLogin()">Admin Login</button>
+                        <button onclick="fetchLiveScores()">⚡ Fetch Live Scores Now</button>
+                        <div class="admin-controls">
+                            <button onclick="clearAllScores()">Clear All Scores</button>
+                            <button onclick="downloadBackup()">💾 Download Backup</button>
+                        </div>
+                    </div>
+                ` : `
+                    <button onclick="adminLogin()" style="margin-bottom: 20px;">Admin Login</button>
+                `}
+
+                <div class="alert alert-info">
+                    <strong>Live Scores:</strong> Scores update automatically every 5 minutes during tournament hours (8 AM - 8 PM ET, Thu-Sun).
+                </div>
+
+                <div class="leaderboard">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Golfer</th>
+                                <th>Score</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${golferList.map(golfer => {
+                                const score = golferScores[golfer];
+                                const isMC = missedCuts.includes(golfer);
+                                return `
+                                    <tr>
+                                        <td>${golfer}</td>
+                                        <td>${score !== undefined ? ((score > 0 ? '+' : '') + score) : '-'}</td>
+                                        <td>${isMC ? '❌ MC' : (score !== undefined ? '✓' : '-')}</td>
+                                    </tr>
+                                `;
+                            }).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        // Fetch live scores from DataGolf via Vercel serverless function
+        async function fetchLiveScores() {
+            try {
+                console.log('Fetching live scores...');
+                const response = await fetch('/api/scores');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                console.log('DataGolf response:', data);
+
+                if (!data.live_stats || !Array.isArray(data.live_stats)) {
+                    console.error('Unexpected data format:', data);
+                    alert('Error: Unexpected data format from API');
+                    return;
+                }
+
+                // Update scores from live_stats array
+                let updatedCount = 0;
+                data.live_stats.forEach(player => {
+                    const name = player.player_name;
+                    const score = player.total_to_par;
+
+                    // Find matching golfer (case-insensitive)
+                    const allGolfers = Object.values(golferGroups).flat();
+                    const match = allGolfers.find(g => g.toLowerCase() === name.toLowerCase());
+
+                    if (match && score !== null && score !== undefined) {
+                        golferScores[match] = score;
+                        updatedCount++;
+                    }
+                });
+
+                console.log(`Updated ${updatedCount} golfer scores`);
+                await saveData();
+                renderScores();
+                renderAllPicks();
+                renderLeaderboard();
+                alert(`✅ Updated ${updatedCount} golfer scores from DataGolf`);
+
+            } catch (error) {
+                console.error('Error fetching scores:', error);
+                alert('Failed to fetch scores. Check console for details.');
+            }
+        }
+
+        function clearAllScores() {
+            if (!isAdmin) return;
+            if (confirm('Clear all golfer scores?')) {
+                golferScores = {};
+                missedCuts = [];
+                saveData();
+                renderScores();
+                renderAllPicks();
+                renderLeaderboard();
+            }
+        }
+
+        function adminLogin() {
+            const password = prompt('Enter admin password:');
+            if (password && btoa(password) === ADMIN_PASSWORD) {
+                isAdmin = true;
+                sessionStorage.setItem('apiAdmin', 'true');
+                alert('Admin access granted!');
+                renderEntryForm();
+                renderScores();
+                renderPopularity();
+            } else if (password) {
+                alert('Incorrect password');
+            }
+        }
+
+        // Pick popularity
+        function renderPopularity() {
+            const container = document.getElementById('popularity-display');
+            const now = new Date();
+            const visible = now >= TSTART || isAdmin;
+
+            if (!visible) {
+                container.innerHTML = `
+                    <div class="locked-message">
+                        <h2>🔒 Pick Popularity Hidden</h2>
+                        <p>This will be visible when the tournament starts.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            if (participants.length === 0) {
+                container.innerHTML = '<div class="alert alert-info">No picks yet.</div>';
+                return;
+            }
+
+            const groups = ['group1', 'group2', 'group3', 'group4', 'group5', 'group6', 'wildcard1', 'wildcard2', 'wildcard3'];
+            
+            container.innerHTML = `
+                ${isAdmin ? `
+                    <div class="admin-section">
+                        <button onclick="downloadBackup()">💾 Download Backup</button>
+                    </div>
+                ` : ''}
+                
+                ${groups.map(group => {
+                    const counts = {};
+                    participants.forEach(p => {
+                        const golfer = p.picks[group];
+                        counts[golfer] = (counts[golfer] || 0) + 1;
+                    });
+
+                    const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+                    const maxCount = sorted[0]?.[1] || 1;
+
+                    return `
+                        <div class="chart-container">
+                            <div class="chart-title">${group.replace(/(\d)/, ' $1').toUpperCase()}</div>
+                            <div class="bar-chart">
+                                ${sorted.map(([golfer, count]) => `
+                                    <div class="bar-item">
+                                        <div class="bar-label">${golfer}</div>
+                                        <div class="bar-visual" style="width: ${(count / maxCount) * 100}%;">
+                                            <div class="bar-count">${count}</div>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                }).join('')}
+            `;
+        }
+
+        function downloadBackup() {
+            const backup = {
+                participants,
+                golferScores,
+                missedCuts,
+                timestamp: new Date().toISOString()
+            };
+
+            const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `valspar-pool-backup-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Tab switching
+        function switchTab(tabName) {
+            // Hide all panels
+            document.querySelectorAll('.tab-content').forEach(panel => {
+                panel.classList.remove('active');
+            });
+
+            // Deactivate all buttons
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Show selected panel
+            document.getElementById(`${tabName}-panel`).classList.add('active');
+
+            // Activate selected button
+            event.target.classList.add('active');
+
+            // Render content for the active tab
+            if (tabName === 'all-picks') {
+                renderAllPicks();
+            } else if (tabName === 'leaderboard') {
+                renderLeaderboard();
+            } else if (tabName === 'scores') {
+                renderScores();
+            } else if (tabName === 'popularity') {
+                renderPopularity();
+            }
+        }
+    </script>
+</body>
+</html>
