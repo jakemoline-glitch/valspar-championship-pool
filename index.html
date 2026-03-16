@@ -889,6 +889,18 @@
         // Leaderboard
         function renderLeaderboard() {
             const container = document.getElementById('leaderboard-display');
+            const now = new Date();
+            const visible = now >= TSTART || isAdmin;
+
+            if (!visible) {
+                container.innerHTML = `
+                    <div class="locked-message">
+                        <h2>🔒 Leaderboard Hidden</h2>
+                        <p>The leaderboard will be visible when the tournament starts.</p>
+                    </div>
+                `;
+                return;
+            }
 
             if (participants.length === 0) {
                 container.innerHTML = '<div class="alert alert-info">No participants yet.</div>';
