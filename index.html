@@ -675,6 +675,11 @@
                     </div>
 
                     <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" placeholder="your.email@example.com" required>
+                    </div>
+
+                    <div class="form-group">
                         <label for="group1">Group 1 - Pick 1</label>
                         <select id="group1" required>
                             <option value="">Select golfer...</option>
@@ -765,6 +770,7 @@
 
         function submitPicks() {
             const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
             const picks = {
                 group1: document.getElementById('group1').value,
                 group2: document.getElementById('group2').value,
@@ -781,6 +787,17 @@
             // Validation
             if (!name) {
                 alert('Please enter your name');
+                return;
+            }
+
+            if (!email) {
+                alert('Please enter your email address');
+                return;
+            }
+
+            // Basic email validation
+            if (!email.includes('@') || !email.includes('.')) {
+                alert('Please enter a valid email address');
                 return;
             }
 
@@ -811,9 +828,9 @@
                 if (!confirm(`Update picks for ${name}?`)) {
                     return;
                 }
-                participants[existingIndex] = { name, picks, predictedScore };
+                participants[existingIndex] = { name, email, picks, predictedScore };
             } else {
-                participants.push({ name, picks, predictedScore });
+                participants.push({ name, email, picks, predictedScore });
             }
 
             saveData();
@@ -821,6 +838,7 @@
             
             // Clear form
             document.getElementById('name').value = '';
+            document.getElementById('email').value = '';
             Object.keys(picks).forEach(key => {
                 document.getElementById(key).value = '';
             });
@@ -834,17 +852,7 @@
         function renderAllPicks() {
             const container = document.getElementById('all-picks-display');
             const now = new Date();
-            const visible = now >= TSTART || isAdmin;
-
-            if (!visible) {
-                container.innerHTML = `
-                    <div class="locked-message">
-                        <h2>🔒 Picks Hidden</h2>
-                        <p>All picks will be visible when the tournament starts.</p>
-                    </div>
-                `;
-                return;
-            }
+            const showPicks = now >= TSTART || isAdmin;
 
             if (participants.length === 0) {
                 container.innerHTML = '<div class="alert alert-info">No picks submitted yet.</div>';
@@ -853,6 +861,25 @@
 
             const sorted = [...participants].sort((a, b) => a.name.localeCompare(b.name));
 
+            if (!showPicks) {
+                // Show only names before tournament starts
+                container.innerHTML = `
+                    <div class="alert alert-warning" style="margin-bottom: 20px;">
+                        <strong>🔒 Picks are hidden until tournament starts</strong>
+                    </div>
+                    ${sorted.map(p => `
+                        <div class="participant-card">
+                            <div class="participant-header">
+                                <div class="participant-name">${p.name}</div>
+                                <div style="color: #666; font-size: 0.9em;">Picks submitted ✓</div>
+                            </div>
+                        </div>
+                    `).join('')}
+                `;
+                return;
+            }
+
+            // Show full picks after tournament starts
             container.innerHTML = sorted.map(p => {
                 const scores = Object.keys(p.picks).map(key => {
                     const golfer = p.picks[key];
@@ -890,23 +917,46 @@
         function renderLeaderboard() {
             const container = document.getElementById('leaderboard-display');
             const now = new Date();
-            const visible = now >= TSTART || isAdmin;
-
-            if (!visible) {
-                container.innerHTML = `
-                    <div class="locked-message">
-                        <h2>🔒 Leaderboard Hidden</h2>
-                        <p>The leaderboard will be visible when the tournament starts.</p>
-                    </div>
-                `;
-                return;
-            }
+            const showPicks = now >= TSTART || isAdmin;
 
             if (participants.length === 0) {
                 container.innerHTML = '<div class="alert alert-info">No participants yet.</div>';
                 return;
             }
 
+            if (!showPicks) {
+                // Show only names in alphabetical order before tournament starts
+                const sorted = [...participants].sort((a, b) => a.name.localeCompare(b.name));
+                
+                container.innerHTML = `
+                    <div class="alert alert-warning" style="margin-bottom: 20px;">
+                        <strong>🔒 Picks are hidden until tournament starts</strong>
+                    </div>
+                    <div class="leaderboard">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Name</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${sorted.map((p, i) => `
+                                    <tr>
+                                        <td><strong>${i + 1}</strong></td>
+                                        <td>${p.name}</td>
+                                        <td>✓ Picks submitted</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+                return;
+            }
+
+            // Show full leaderboard after tournament starts
             const sorted = [...participants]
                 .map(p => ({ ...p, score: calculateScore(p) }))
                 .sort((a, b) => a.score - b.score);
@@ -984,6 +1034,7 @@
                         <div class="admin-controls">
                             <button onclick="clearAllScores()">Clear All Scores</button>
                             <button onclick="downloadBackup()">💾 Download Backup</button>
+                            <button onclick="downloadExcel()">📊 Download Excel (Participants)</button>
                         </div>
                     </div>
                 ` : `
@@ -1122,6 +1173,7 @@
                 ${isAdmin ? `
                     <div class="admin-section">
                         <button onclick="downloadBackup()">💾 Download Backup</button>
+                        <button onclick="downloadExcel()">📊 Download Excel (Participants)</button>
                     </div>
                 ` : ''}
                 
@@ -1167,6 +1219,44 @@
             const a = document.createElement('a');
             a.href = url;
             a.download = `valspar-pool-backup-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function downloadExcel() {
+            if (!isAdmin) {
+                alert('Admin access required');
+                return;
+            }
+
+            // Create CSV content (Excel can open CSV files)
+            let csv = 'Name,Email,Group 1,Group 2,Group 3,Group 4,Group 5,Group 6,Wild Card 1,Wild Card 2,Wild Card 3,Predicted Score\n';
+            
+            participants.forEach(p => {
+                const row = [
+                    p.name,
+                    p.email || '',
+                    p.picks.group1,
+                    p.picks.group2,
+                    p.picks.group3,
+                    p.picks.group4,
+                    p.picks.group5,
+                    p.picks.group6,
+                    p.picks.wildcard1,
+                    p.picks.wildcard2,
+                    p.picks.wildcard3,
+                    p.predictedScore
+                ].map(field => `"${field}"`).join(',');
+                
+                csv += row + '\n';
+            });
+
+            // Create download
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `valspar-pool-participants-${new Date().toISOString().split('T')[0]}.csv`;
             a.click();
             URL.revokeObjectURL(url);
         }
