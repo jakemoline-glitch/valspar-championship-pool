@@ -30,14 +30,50 @@
         .header {
             background: linear-gradient(135deg, #8B0000, #DC143C, #FF6347);
             color: white;
-            padding: 30px;
+            padding: 40px 30px;
             text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 30px 30px;
+            animation: drift 20s linear infinite;
+        }
+
+        @keyframes drift {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(30px, 30px); }
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
         }
 
         .header h1 {
-            font-size: 2.5em;
+            font-size: 2.8em;
+            margin-bottom: 15px;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.4);
+            letter-spacing: 1px;
+        }
+
+        .header .trophy {
+            font-size: 3em;
             margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
         }
 
         .header .subtitle {
@@ -110,6 +146,7 @@
         }
 
         input[type="text"],
+        input[type="email"],
         input[type="number"],
         select {
             width: 100%;
@@ -117,14 +154,18 @@
             border: 2px solid #ddd;
             border-radius: 8px;
             font-size: 16px;
-            transition: border-color 0.3s;
+            transition: all 0.3s;
+            background: white;
         }
 
         input[type="text"]:focus,
+        input[type="email"]:focus,
         input[type="number"]:focus,
         select:focus {
             outline: none;
             border-color: #DC143C;
+            box-shadow: 0 0 0 3px rgba(220,20,60,0.1);
+            transform: translateY(-2px);
         }
 
         .group-info {
@@ -142,37 +183,61 @@
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: all 0.3s ease;
             width: 100%;
+            box-shadow: 0 4px 12px rgba(220,20,60,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        button:hover::before {
+            width: 300px;
+            height: 300px;
         }
 
         button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(220,20,60,0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(220,20,60,0.4);
         }
 
         button:active {
-            transform: translateY(0);
+            transform: translateY(-1px);
         }
 
         button:disabled {
-            background: #ccc;
+            background: linear-gradient(135deg, #ccc, #999);
             cursor: not-allowed;
             transform: none;
+            box-shadow: none;
         }
 
         .participant-card {
-            background: #f9f9f9;
+            background: linear-gradient(135deg, #ffffff 0%, #f9f9f9 100%);
             border: 2px solid #e0e0e0;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-            transition: transform 0.2s, box-shadow 0.2s;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         }
 
         .participant-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            transform: translateY(-6px);
+            box-shadow: 0 12px 32px rgba(220,20,60,0.15);
+            border-color: #DC143C;
         }
 
         .participant-header {
@@ -202,10 +267,17 @@
         }
 
         .pick-item {
-            background: white;
-            padding: 10px;
-            border-radius: 6px;
+            background: linear-gradient(135deg, #ffffff 0%, #fafafa 100%);
+            padding: 12px;
+            border-radius: 8px;
             border-left: 4px solid #DC143C;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+            transition: all 0.2s;
+        }
+
+        .pick-item:hover {
+            transform: translateX(4px);
+            box-shadow: 0 4px 12px rgba(220,20,60,0.15);
         }
 
         .pick-label {
@@ -223,17 +295,18 @@
         .golfer-score {
             display: inline-block;
             margin-left: 8px;
-            padding: 2px 8px;
-            background: #e8f5e9;
-            color: #2e7d32;
-            border-radius: 4px;
-            font-weight: 600;
-            font-size: 0.9em;
+            padding: 4px 10px;
+            background: linear-gradient(135deg, #4caf50, #66bb6a);
+            color: white;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.85em;
+            box-shadow: 0 2px 6px rgba(76,175,80,0.3);
         }
 
         .golfer-score.missed-cut {
-            background: #ffebee;
-            color: #c62828;
+            background: linear-gradient(135deg, #f44336, #e57373);
+            box-shadow: 0 2px 6px rgba(244,67,54,0.3);
         }
 
         .predicted-score {
@@ -317,6 +390,58 @@
             background: #e8f5e9;
             color: #2e7d32;
             border-left: 4px solid #2e7d32;
+        }
+
+        .rules-box {
+            background: linear-gradient(135deg, #e3f2fd 0%, #f5f5f5 100%);
+            border: 2px solid #1565c0;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(21,101,192,0.1);
+        }
+
+        .rules-box h3 {
+            color: #1565c0;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .rules-box ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .rules-box li {
+            padding: 10px 0;
+            padding-left: 30px;
+            position: relative;
+            line-height: 1.6;
+        }
+
+        .rules-box li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #1565c0;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .rules-box .highlight {
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 4px solid #DC143C;
+        }
+
+        .rules-box .highlight strong {
+            color: #DC143C;
         }
 
         .countdown {
@@ -425,9 +550,12 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>⛳ The Valspar Championship 2026</h1>
-            <div class="subtitle">March 19-22 · Copperhead Course, Innisbrook Resort</div>
-            <div class="info">$50 Entry · Best 6 of 9 Scoring · Venmo @Jake-Moline-1</div>
+            <div class="header-content">
+                <div class="trophy">🏆</div>
+                <h1>The Valspar Championship 2026</h1>
+                <div class="subtitle">March 19-22 · Copperhead Course, Innisbrook Resort</div>
+                <div class="info">$50 Entry · Best 6 of 9 Scoring · Venmo @Jake-Moline-1</div>
+            </div>
         </div>
 
         <div class="tabs">
@@ -469,7 +597,7 @@
         const SUPABASE_URL = 'https://dhcuseybeoybnagiezbc.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRoY3VzZXliZW95Ym5hZ2llemJjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4NDUyMTIsImV4cCI6MjA4NzQyMTIxMn0.0SPoLKflZjpgXDASm7dlZuo7IY4YoRO0gmazJJOeAUA';
         const DATABASE_KEY = 'valsparPool2026';
-        const ADMIN_PASSWORD = 'VGl0bGVpc3Rnb2xmODgh'; // Base64: Titleistgolf88!!
+        const ADMIN_PASSWORD = 'VGl0bGVpc3Rnb2xmODghIQ=='; // Base64: Titleistgolf88!!
         const TSTART = new Date('2026-03-19T08:00:00-04:00'); // 8 AM ET Thursday
         const TEND = new Date('2026-03-22T20:00:00-04:00'); // 8 PM EDT Sunday
 
@@ -668,6 +796,22 @@
             }
 
             container.innerHTML = `
+                <div class="rules-box">
+                    <h3>📋 Pool Format & Rules</h3>
+                    <ul>
+                        <li><strong>Entry Fee:</strong> $50 per person (Venmo @Jake-Moline-1)</li>
+                        <li><strong>Pick 9 Golfers:</strong> 1 from each of Groups 1-6, plus 3 Wild Cards</li>
+                        <li><strong>Scoring:</strong> Best 6 of 9 golfers count toward your total</li>
+                        <li><strong>Scoring System:</strong> Sum of your best 6 golfers' scores relative to par</li>
+                        <li><strong>Missed Cuts:</strong> Golfers who miss the cut = +30 per round (rounds 3 & 4 = +60 total)</li>
+                        <li><strong>Tiebreaker:</strong> Predicted winning score (closest wins)</li>
+                        <li><strong>No Duplicates:</strong> You cannot pick the same golfer multiple times</li>
+                    </ul>
+                    <div class="highlight">
+                        <strong>🔒 Picks lock:</strong> Thursday, March 19 at 8:00 AM ET (first tee time)
+                    </div>
+                </div>
+
                 <div class="entry-form">
                     <div class="form-group">
                         <label for="name">Your Name</label>
