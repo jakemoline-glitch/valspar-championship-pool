@@ -640,19 +640,15 @@
             const isTournamentActive = now >= TSTART && now <= TEND;
 
             if (isTournamentActive && isTournamentDay && isDuringHours) {
-                console.log('Auto-refresh initialized');
+                console.log('Auto-refresh initialized for all users');
                 document.getElementById('auto-refresh-status').style.display = 'block';
                 
-                // Fetch immediately
-                if (isAdmin) {
-                    fetchLiveScores();
-                }
+                // Fetch immediately for everyone
+                fetchLiveScores();
                 
-                // Then every 5 minutes
+                // Then every 5 minutes for everyone
                 autoRefreshInterval = setInterval(() => {
-                    if (isAdmin) {
-                        fetchLiveScores();
-                    }
+                    fetchLiveScores();
                 }, 5 * 60 * 1000);
             }
         }
@@ -1174,7 +1170,7 @@
                     <div class="admin-section">
                         <h3>🔐 Admin Controls</h3>
                         <button onclick="adminLogin()">Admin Login</button>
-                        <button onclick="fetchLiveScores()">⚡ Fetch Live Scores Now</button>
+                        <button onclick="fetchLiveScores(true)">⚡ Fetch Live Scores Now</button>
                         <div class="admin-controls">
                             <button onclick="clearAllScores()">Clear All Scores</button>
                             <button onclick="downloadBackup()">💾 Download Backup</button>
@@ -1186,7 +1182,7 @@
                 `}
 
                 <div class="alert alert-info">
-                    <strong>Live Scores:</strong> Scores update automatically every 5 minutes during tournament hours (8 AM - 8 PM ET, Thu-Sun).
+                    <strong>Live Scores:</strong> Scores update automatically every 5 minutes during tournament hours (8 AM - 8 PM ET, Thu-Sun) for all users.
                 </div>
 
                 <div class="leaderboard">
@@ -1217,7 +1213,7 @@
         }
 
         // Fetch live scores from DataGolf via Vercel serverless function
-        async function fetchLiveScores() {
+        async function fetchLiveScores(showAlert = false) {
             try {
                 console.log('Fetching live scores...');
                 const response = await fetch('/api/scores');
@@ -1231,7 +1227,7 @@
 
                 if (!data.live_stats || !Array.isArray(data.live_stats)) {
                     console.error('Unexpected data format:', data);
-                    alert('Error: Unexpected data format from API');
+                    if (showAlert) alert('Error: Unexpected data format from API');
                     return;
                 }
 
@@ -1256,11 +1252,11 @@
                 renderScores();
                 renderAllPicks();
                 renderLeaderboard();
-                alert(`✅ Updated ${updatedCount} golfer scores from DataGolf`);
+                if (showAlert) alert(`✅ Updated ${updatedCount} golfer scores from DataGolf`);
 
             } catch (error) {
                 console.error('Error fetching scores:', error);
-                alert('Failed to fetch scores. Check console for details.');
+                if (showAlert) alert('Failed to fetch scores. Check console for details.');
             }
         }
 
