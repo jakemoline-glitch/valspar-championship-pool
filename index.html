@@ -1266,6 +1266,22 @@
                     // Find matching golfer (case-insensitive)
                     const match = allGolfers.find(g => g.toLowerCase() === formattedName.toLowerCase());
 
+                    // Extra debugging for Xander Schauffele specifically
+                    if (formattedName.toLowerCase().includes('schauffele')) {
+                        console.log(`🔍 Testing Schauffele match:`);
+                        console.log(`  DataGolf name: "${formattedName}"`);
+                        console.log(`  Length: ${formattedName.length}`);
+                        console.log(`  Lowercase: "${formattedName.toLowerCase()}"`);
+                        
+                        const poolSchauffele = allGolfers.find(g => g.toLowerCase().includes('schauffele'));
+                        if (poolSchauffele) {
+                            console.log(`  Pool name: "${poolSchauffele}"`);
+                            console.log(`  Length: ${poolSchauffele.length}`);
+                            console.log(`  Lowercase: "${poolSchauffele.toLowerCase()}"`);
+                            console.log(`  Exact match? ${formattedName.toLowerCase() === poolSchauffele.toLowerCase()}`);
+                        }
+                    }
+
                     if (match && score !== null && score !== undefined) {
                         console.log(`✓ Matched: ${dgName} → ${match} = ${score}`);
                         golferScores[match] = score;
