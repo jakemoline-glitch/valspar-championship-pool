@@ -1247,7 +1247,7 @@
                 console.log('Total golfers in pool:', allGolfers.length);
                 console.log('Sample pool golfer names:', allGolfers.slice(0, 5));
                 
-                data.live_stats.forEach(player => {
+                data.live_stats.forEach((player, index) => {
                     const dgName = player.player_name; // e.g. "Im, Sungjae"
                     const score = player.total_to_par;
 
@@ -1258,6 +1258,11 @@
                         formattedName = `${parts[1]} ${parts[0]}`; // "Sungjae Im"
                     }
 
+                    // Log first few conversions for debugging
+                    if (index < 5) {
+                        console.log(`Name conversion: "${dgName}" → "${formattedName}"`);
+                    }
+
                     // Find matching golfer (case-insensitive)
                     const match = allGolfers.find(g => g.toLowerCase() === formattedName.toLowerCase());
 
@@ -1265,17 +1270,17 @@
                         console.log(`✓ Matched: ${dgName} → ${match} = ${score}`);
                         golferScores[match] = score;
                         updatedCount++;
-                    } else if (dgName) {
-                        unmatchedPlayers.push(dgName);
+                    } else if (dgName && index < 20) {
+                        unmatchedPlayers.push(`${dgName} (formatted: ${formattedName})`);
                     }
                 });
 
                 // Show some unmatched names for debugging
                 if (unmatchedPlayers.length > 0) {
-                    console.log(`❌ ${unmatchedPlayers.length} players from DataGolf did not match. First 10:`, unmatchedPlayers.slice(0, 10));
+                    console.log(`❌ First 10 unmatched players:`, unmatchedPlayers.slice(0, 10));
                 }
 
-                console.log(`📊 Updated ${updatedCount} golfer scores`);
+                console.log(`📊 Updated ${updatedCount} golfer scores out of ${data.live_stats.length} total players`);
                 await saveData();
                 renderScores();
                 renderAllPicks();
