@@ -1215,39 +1215,67 @@
         // Fetch live scores from DataGolf via Vercel serverless function
         async function fetchLiveScores(showAlert = false) {
             try {
-                console.log('Fetching live scores...');
+                console.log('🔄 Fetching live scores...');
+                console.log('Time now:', new Date().toISOString());
+                
                 const response = await fetch('/api/scores');
+                console.log('API response status:', response.status);
                 
                 if (!response.ok) {
                     throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                 }
 
                 const data = await response.json();
-                console.log('DataGolf response:', data);
+                console.log('✅ DataGolf response received');
+                console.log('Number of players in live_stats:', data.live_stats?.length || 0);
+                
+                // Show first 5 player names from DataGolf for debugging
+                if (data.live_stats && data.live_stats.length > 0) {
+                    console.log('Sample DataGolf player names:', data.live_stats.slice(0, 5).map(p => p.player_name));
+                }
 
                 if (!data.live_stats || !Array.isArray(data.live_stats)) {
-                    console.error('Unexpected data format:', data);
+                    console.error('❌ Unexpected data format:', data);
                     if (showAlert) alert('Error: Unexpected data format from API');
                     return;
                 }
 
                 // Update scores from live_stats array
                 let updatedCount = 0;
+                let unmatchedPlayers = [];
+                const allGolfers = Object.values(golferGroups).flat();
+                console.log('Total golfers in pool:', allGolfers.length);
+                console.log('Sample pool golfer names:', allGolfers.slice(0, 5));
+                
                 data.live_stats.forEach(player => {
-                    const name = player.player_name;
+                    const dgName = player.player_name; // e.g. "Im, Sungjae"
                     const score = player.total_to_par;
 
+                    // Convert DataGolf format "Last, First" to "First Last"
+                    let formattedName = dgName;
+                    if (dgName.includes(',')) {
+                        const parts = dgName.split(',').map(p => p.trim());
+                        formattedName = `${parts[1]} ${parts[0]}`; // "Sungjae Im"
+                    }
+
                     // Find matching golfer (case-insensitive)
-                    const allGolfers = Object.values(golferGroups).flat();
-                    const match = allGolfers.find(g => g.toLowerCase() === name.toLowerCase());
+                    const match = allGolfers.find(g => g.toLowerCase() === formattedName.toLowerCase());
 
                     if (match && score !== null && score !== undefined) {
+                        console.log(`✓ Matched: ${dgName} → ${match} = ${score}`);
                         golferScores[match] = score;
                         updatedCount++;
+                    } else if (dgName) {
+                        unmatchedPlayers.push(dgName);
                     }
                 });
 
-                console.log(`Updated ${updatedCount} golfer scores`);
+                // Show some unmatched names for debugging
+                if (unmatchedPlayers.length > 0) {
+                    console.log(`❌ ${unmatchedPlayers.length} players from DataGolf did not match. First 10:`, unmatchedPlayers.slice(0, 10));
+                }
+
+                console.log(`📊 Updated ${updatedCount} golfer scores`);
                 await saveData();
                 renderScores();
                 renderAllPicks();
@@ -1255,7 +1283,7 @@
                 if (showAlert) alert(`✅ Updated ${updatedCount} golfer scores from DataGolf`);
 
             } catch (error) {
-                console.error('Error fetching scores:', error);
+                console.error('❌ Error fetching scores:', error);
                 if (showAlert) alert('Failed to fetch scores. Check console for details.');
             }
         }
