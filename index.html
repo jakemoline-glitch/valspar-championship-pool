@@ -1249,7 +1249,7 @@
                 
                 data.live_stats.forEach((player, index) => {
                     const dgName = player.player_name; // e.g. "Im, Sungjae"
-                    const score = player.total_to_par;
+                    const score = player.total; // THIS WAS THE BUG - was player.total_to_par
 
                     // Convert DataGolf format "Last, First" to "First Last"
                     let formattedName = dgName;
